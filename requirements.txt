@@ -1,0 +1,5 @@
+flask
+spleeter==2.4.2
+ffmpeg-python
+numpy
+scipy
