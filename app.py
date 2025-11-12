@@ -1,3 +1,8 @@
+import imageio_ffmpeg as ffmpeg
+import os
+
+os.environ["PATH"] += os.pathsep + os.path.dirname(ffmpeg.get_ffmpeg_exe())
+
 from flask import Flask, request, jsonify
 from scripts.process_audio import process_audio_file
 import os
