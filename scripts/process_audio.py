@@ -1,16 +1,20 @@
-import spleeter
+from spleeter.separator import Separator
 import librosa
-import numpy as np
+import os
+
+separator = Separator('spleeter:2stems')
 
 def process_audio_file(filepath):
-    from spleeter.separator import Separator
-
-    separator = Separator('spleeter:2stems')
-    separator.separate_to_file(filepath, 'output')
-
-    drums_path = f"output/{filepath.split('/')[-1].replace('.mp3', '')}/drums.wav"
-    y, sr = librosa.load(drums_path)
-    onset_env = librosa.onset.onset_strength(y=y, sr=sr)
-    tempo, beats = librosa.beat.beat_track(onset_envelope=onset_env, sr=sr)
-
-    return {"tempo": float(tempo), "beats": beats.tolist()}
+    output_dir = "output"
+    os.makedirs(output_dir, exist_ok=True)
+    
+    separator.separate_to_file(filepath, output_dir)
+    
+    instrumental_path = os.path.join(output_dir, os.path.splitext(os.path.basename(filepath))[0], "accompaniment.wav")
+    
+    y, sr = librosa.load(instrumental_path)
+    tempo, beats = librosa.beat.beat_track(y=y, sr=sr)
+    
+    beat_times = librosa.frames_to_time(beats, sr=sr).tolist()
+    
+    return beat_times
