@@ -1,14 +1,10 @@
-# Используем официальный Python 3.10
 FROM python:3.10-slim
 
-# Устанавливаем зависимости Spleeter
-RUN pip install --no-cache-dir spleeter
-
-# Создаём рабочую директорию
 WORKDIR /spleeter
 
-# Копируем скрипт для обработки
-COPY app.py .
+# Устанавливаем Spleeter и Flask
+RUN pip install --no-cache-dir spleeter flask
 
-# Задаём команду по умолчанию
+COPY spleeter_service.py .
+
 CMD ["python", "app.py"]
