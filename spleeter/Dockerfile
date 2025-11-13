@@ -21,6 +21,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Команда по умолчанию при запуске контейнера
-# Здесь замените на ваш скрипт запуска Spleeter, например:
-# python spleeter_service.py
-CMD ["python", "spleeter_service.py"]
+CMD ["python", "app.py"]
