@@ -5,6 +5,7 @@ WORKDIR /spleeter
 RUN pip install --upgrade pip
 
 RUN pip install --no-cache-dir \
+    numpy==1.26.4 \
     tensorflow==2.9.3 \
     spleeter==2.4.0 \
     Flask==1.1.4 \
