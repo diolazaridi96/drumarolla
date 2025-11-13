@@ -1,8 +1,5 @@
-flask
-tensorflow==2.20.0
-git+https://github.com/deezer/spleeter.git@master
-librosa
-numpy
-soundfile
-imageio
-imageio-ffmpeg
+flask==2.2.5
+tensorflow==2.10.0
+spleeter==2.3.2
+imageio==2.31.1
+imageio-ffmpeg==0.4.9
