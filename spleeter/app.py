@@ -1,6 +1,5 @@
 from fastapi import FastAPI, UploadFile, File
-import subprocess
-import os
+import subprocess, os
 
 app = FastAPI()
 
@@ -10,13 +9,16 @@ async def separate(file: UploadFile = File(...)):
     output_dir = "/tmp/output"
     os.makedirs(output_dir, exist_ok=True)
 
-    # Сохраняем загруженный файл
+    # Сохраняем файл
     with open(input_path, "wb") as f:
         f.write(await file.read())
 
     # Запускаем spleeter
     try:
-        subprocess.run(["spleeter", "separate", "-i", input_path, "-o", output_dir], check=True)
+        subprocess.run(
+            ["spleeter", "separate", "-i", input_path, "-o", output_dir],
+            check=True
+        )
     except subprocess.CalledProcessError as e:
         return {"error": str(e)}
 
