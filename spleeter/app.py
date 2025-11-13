@@ -1,29 +1,17 @@
-from flask import Flask, request, jsonify
-import subprocess, os
+import sys
+from spleeter.separator import Separator
 
-app = Flask(__name__)
-
-@app.route("/separate", methods=["POST"])
-def separate():
-    if "file" not in request.files:
-        return jsonify({"error": "no file"}), 400
-
-    file = request.files["file"]
-    input_path = f"/tmp/{file.filename}"
-    output_dir = "/tmp/output"
-    os.makedirs(output_dir, exist_ok=True)
-    file.save(input_path)
-
-    try:
-        subprocess.run(
-            ["spleeter", "separate", "-i", input_path, "-o", output_dir],
-            check=True
-        )
-    except subprocess.CalledProcessError as e:
-        return jsonify({"error": str(e)}), 500
-
-    return jsonify({"status": "ok", "output": output_dir})
+def separate_audio(input_path, output_path="output"):
+    """
+    Разделяет аудио на вокал и инструментал.
+    """
+    separator = Separator('spleeter:2stems')  # 2 stems: вокал + остальное
+    separator.separate_to_file(input_path, output_path)
+    print(f"Готово! Результаты в папке: {output_path}")
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080)
-
+    if len(sys.argv) < 2:
+        print("Использование: python app.py <путь_к_аудио>")
+        sys.exit(1)
+    input_file = sys.argv[1]
+    separate_audio(input_file)
