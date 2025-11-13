@@ -1,24 +1,14 @@
-# Базовый образ с Python 3.10
+# Используем официальный Python 3.10
 FROM python:3.10-slim
 
-# Устанавливаем системные зависимости для Spleeter и аудио обработки
-RUN apt-get update && apt-get install -y \
-    ffmpeg \
-    libsndfile1 \
-    && rm -rf /var/lib/apt/lists/*
+# Устанавливаем зависимости Spleeter
+RUN pip install --no-cache-dir spleeter
 
-# Устанавливаем рабочую директорию
+# Создаём рабочую директорию
 WORKDIR /spleeter
 
-# Копируем только requirements.txt сначала, чтобы кешировать слои
-COPY requirements.txt .
+# Копируем скрипт для обработки
+COPY app.py .
 
-# Обновляем pip и устанавливаем зависимости
-RUN pip install --upgrade pip
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Копируем весь код сплиттера
-COPY . .
-
-# Команда по умолчанию при запуске контейнера
+# Задаём команду по умолчанию
 CMD ["python", "app.py"]
