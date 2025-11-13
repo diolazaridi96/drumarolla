@@ -1,24 +1,27 @@
-# Используем стабильный Python 3.10 (совместим с Spleeter)
+# Используем стабильный Python 3.10
 FROM python:3.10-slim
 
-# Устанавливаем зависимости системы
-RUN apt-get update && \
-    apt-get install -y ffmpeg && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+# Обновляем pip и устанавливаем зависимости системы
+RUN apt-get update && apt-get install -y \
+    ffmpeg \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
 
-# Устанавливаем рабочую директорию
+# Создаём рабочую директорию
 WORKDIR /app
 
-# Копируем все файлы проекта
-COPY . .
+# Копируем файлы проекта
+COPY . /app
 
-# Обновляем pip и устанавливаем зависимости
+# Копируем requirements
+COPY requirements_spleeter.txt /app/requirements.txt
+
+# Устанавливаем зависимости Python
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-# Открываем порт для Flask
+# Открываем порт, если нужен API
 EXPOSE 5000
 
-# Запускаем приложение
+# Команда запуска (можно заменить на flask или python скрипт)
 CMD ["python", "app.py"]
