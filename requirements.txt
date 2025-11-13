@@ -1,6 +1,8 @@
-flask==2.3.3
+flask
 spleeter==2.3.2
 tensorflow==2.10.0
-ffmpeg-python==0.2.0
-imageio-ffmpeg==0.4.8
-numpy==1.23.5
+librosa
+numpy
+soundfile
+imageio
+imageio-ffmpeg
