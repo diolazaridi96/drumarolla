@@ -5,6 +5,6 @@ WORKDIR /spleeter
 # Устанавливаем Spleeter и Flask
 RUN pip install --no-cache-dir spleeter flask
 
-COPY spleeter_service.py .
+COPY app.py .
 
 CMD ["python", "app.py"]
