@@ -1,31 +1,23 @@
-from flask import Flask, request, jsonify
-from spleeter.separator import Separator
+from fastapi import FastAPI, UploadFile, File
+import subprocess
 import os
 
-app = Flask(__name__)
-separator = Separator('spleeter:2stems')
+app = FastAPI()
 
-@app.route("/separate", methods=["POST"])
-def separate():
-    if 'file' not in request.files:
-        return jsonify({"error": "No file uploaded"}), 400
+@app.post("/separate")
+async def separate(file: UploadFile = File(...)):
+    input_path = f"/tmp/{file.filename}"
+    output_dir = "/tmp/output"
+    os.makedirs(output_dir, exist_ok=True)
 
-    audio = request.files['file']
-    filename = audio.filename
-    input_path = f"/app/input/{filename}"
-    output_path = f"/app/output/{filename}"
+    # Сохраняем загруженный файл
+    with open(input_path, "wb") as f:
+        f.write(await file.read())
 
-    os.makedirs("/app/input", exist_ok=True)
-    os.makedirs("/app/output", exist_ok=True)
+    # Запускаем spleeter
+    try:
+        subprocess.run(["spleeter", "separate", "-i", input_path, "-o", output_dir], check=True)
+    except subprocess.CalledProcessError as e:
+        return {"error": str(e)}
 
-    audio.save(input_path)
-    separator.separate_to_file(input_path, "/app/output")
-
-    return jsonify({"message": f"File processed: {filename}"}), 200
-
-@app.route("/", methods=["GET"])
-def home():
-    return "✅ Spleeter API is running!"
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    return {"status": "ok", "output": output_dir}
