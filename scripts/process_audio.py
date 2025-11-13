@@ -1,17 +1,16 @@
-from spleeter.separator import Separator
-import os
+import spleeter
+import librosa
+import numpy as np
 
 def process_audio_file(filepath):
-    # Создаём папку для результатов
-    output_dir = "separated"
-    os.makedirs(output_dir, exist_ok=True)
+    from spleeter.separator import Separator
 
-    # Разделяем барабаны и всё остальное
     separator = Separator('spleeter:2stems')
-    separator.separate_to_file(filepath, output_dir)
+    separator.separate_to_file(filepath, 'output')
 
-    # Здесь можно добавить анализ барабанной дорожки
-    # (например, поиск пиков по амплитуде)
-    # Пока просто вернём тестовый битмап:
-    beatmap = [{"time": 1.0, "type": "kick"}, {"time": 2.0, "type": "snare"}]
-    return beatmap
+    drums_path = f"output/{filepath.split('/')[-1].replace('.mp3', '')}/drums.wav"
+    y, sr = librosa.load(drums_path)
+    onset_env = librosa.onset.onset_strength(y=y, sr=sr)
+    tempo, beats = librosa.beat.beat_track(onset_envelope=onset_env, sr=sr)
+
+    return {"tempo": float(tempo), "beats": beats.tolist()}
