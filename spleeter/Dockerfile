@@ -2,6 +2,12 @@ FROM python:3.10-slim
 
 WORKDIR /spleeter
 
+# Обновляем apt и устанавливаем ffmpeg + libsndfile (нужна Spleeter)
+RUN apt-get update && apt-get install -y \
+    ffmpeg \
+    libsndfile1 \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN pip install --upgrade pip
 
 RUN pip install --no-cache-dir \
@@ -16,3 +22,4 @@ RUN pip install --no-cache-dir \
 COPY app.py .
 
 CMD ["python", "app.py"]
+
