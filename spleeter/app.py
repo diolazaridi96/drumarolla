@@ -1,4 +1,4 @@
-from flask import Flask, request, send_file, jsonify
+from flask import Flask, request, send_file, jsonify, render_template_string
 from spleeter.separator import Separator
 import os
 
@@ -9,6 +9,27 @@ UPLOAD_FOLDER = "/tmp/input"
 OUTPUT_FOLDER = "/tmp/output"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
+
+# HTML-форма для загрузки аудио через браузер
+HTML_PAGE = """
+<!doctype html>
+<html>
+<head>
+    <title>Spleeter Web</title>
+</head>
+<body>
+    <h2>Загрузите аудио для разделения на вокал и инструментал</h2>
+    <form action="/separate" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept="audio/*" required>
+        <input type="submit" value="Отделить вокал">
+    </form>
+</body>
+</html>
+"""
+
+@app.route("/")
+def index():
+    return render_template_string(HTML_PAGE)
 
 @app.route("/separate", methods=["POST"])
 def separate_audio():
@@ -30,3 +51,4 @@ def separate_audio():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=6000)
+
