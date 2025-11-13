@@ -2,8 +2,8 @@ FROM python:3.10-slim
 
 WORKDIR /spleeter
 
-# Устанавливаем Spleeter и Flask
-RUN pip install --no-cache-dir spleeter flask
+# Устанавливаем совместимые версии Flask и Werkzeug
+RUN pip install --no-cache-dir spleeter Flask==2.2.5 Werkzeug==2.2.3
 
 COPY app.py .
 
