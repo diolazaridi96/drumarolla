@@ -1,7 +1,8 @@
 flask==2.2.5
 werkzeug==2.2.3
-tensorflow==2.10.0
-spleeter
+tensorflow==2.12.1
+spleeter==2.4.2
 imageio-ffmpeg
-typer>=0.3.2
+numpy>=1.24
+typer>=0.7.0
 click>=7.1.1,<9.0.0
