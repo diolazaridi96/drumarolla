@@ -10,7 +10,7 @@ OUTPUT_FOLDER = "/tmp/output"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
-# HTML-форма для загрузки аудио через браузер
+# HTML-форма
 HTML_PAGE = """
 <!doctype html>
 <html>
@@ -41,7 +41,10 @@ def separate_audio():
     output_dir = os.path.join(OUTPUT_FOLDER, os.path.splitext(file.filename)[0])
     file.save(input_path)
 
-    separator.separate_to_file(input_path, output_dir)
+    try:
+        separator.separate_to_file(input_path, output_dir)
+    except Exception as e:
+        return jsonify({"error": f"Separation failed: {str(e)}"}), 500
 
     vocals_path = os.path.join(output_dir, "vocals.wav")
     if not os.path.exists(vocals_path):
@@ -50,5 +53,6 @@ def separate_audio():
     return send_file(vocals_path, as_attachment=True)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=6000)
-
+    import os
+    port = int(os.environ.get("PORT", 5000))  # Используем PORT от Railway, по умолчанию 5000
+    app.run(host="0.0.0.0", port=port)
