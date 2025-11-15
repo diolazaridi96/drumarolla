@@ -10,7 +10,7 @@ OUTPUT_FOLDER = "/tmp/output"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
-# HTML-форма
+# HTML-форма для загрузки аудио через браузер
 HTML_PAGE = """
 <!doctype html>
 <html>
@@ -53,6 +53,6 @@ def separate_audio():
     return send_file(vocals_path, as_attachment=True)
 
 if __name__ == "__main__":
-    import os
-    port = int(os.environ.get("PORT", 6000))  # Используем PORT от Railway, по умолчанию 5000
+    # Используем порт, который предоставляет Railway
+    port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
